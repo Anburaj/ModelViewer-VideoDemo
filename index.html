@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>&lt;model-viewer&gt; template</title>
+    <meta charset="utf-8">
+    <meta name="description" content="&lt;model-viewer&gt; template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="./styles.css" rel="stylesheet"/>
+    
+  </head>
+  <body>
+    <!-- <model-viewer> HTML element -->
+    <div class="logo-container"><img src="./logo.jpeg" height="100px"/></div>
+
+    
+
+
+    <model-viewer id="animated" src="Office.glb" ar ar-modes="webxr scene-viewer quick-look" 
+    camera-controls
+    loading="eager"
+    poster="poster.webp" 
+    shadow-intensity="1" 
+    autoplay
+    >
+
+      <div class="progress-bar" slot="progress-bar">
+          <div class="update-bar"></div>
+      </div>
+      <button slot="ar-button" id="ar-button">
+          View in your space
+      </button>
+      
+      <div id="ar-prompt">
+          <img src="ar_hand_prompt.png">
+      </div>
+    </model-viewer>  
+    
+    <script src="script.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://modelviewer.dev/node_modules/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+<script type="importmap-shim">
+{
+  "imports": {
+    "three": "https://ajax.googleapis.com/ajax/libs/model-viewer/3.0.1/model-viewer.min.js"
+  }
+}
+</script>
+
+<script type="module">
+  const modelViewerAnimated = document.querySelector("model-viewer#animated");
+
+  const sound = document.querySelector("audio#audio_player");
+
+  let videoTexture = null;
+  customElements.whenDefined('model-viewer').then(() => {
+    videoTexture = modelViewerAnimated.createVideoTexture("Video.mp4");
+  });
+
+  
+
+  modelViewerAnimated.addEventListener("load", async () => {
+  
+    const material = modelViewerAnimated.model.materials[1];
+    const {baseColorTexture} = material.pbrMetallicRoughness;
+    
+   baseColorTexture.setTexture(videoTexture);
+   baseColorTexture.texture.sampler.setRotation(3.14); // 3.14
+   const scale = {
+    x: 1,
+    y: 1
+  };
+
+  const offset = {
+    x: 0,
+    y: 0
+  };
+  baseColorTexture.texture.sampler.setScale(scale);
+  baseColorTexture.texture.sampler.setOffset(offset);
+
+});
+
+  </script>
+
+  </body>
+</html>
